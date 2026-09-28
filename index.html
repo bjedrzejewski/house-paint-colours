@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#762c59" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#21171f" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap" rel="stylesheet" />
+  <title>House Paint Colours</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --paper: #f5f1ec;
+      --paper-deep: #e9e1d9;
+      --ink: #211b1f;
+      --muted: #675e63;
+      --hairline: rgba(33, 27, 31, 0.16);
+      --surface: #fffaf3;
+      --surface-raised: #fffdfa;
+      --mulberry: #654657;
+      --mulberry-deep: #4b1938;
+      --option: #4f6475;
+      --shadow: 0 20px 50px rgba(56, 32, 48, 0.13);
+      --dialog-shadow: 0 28px 90px rgba(35, 20, 29, 0.34);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #171416;
+        --paper-deep: #221d20;
+        --ink: #f5edef;
+        --muted: #c9bdc3;
+        --hairline: rgba(255, 255, 255, 0.15);
+        --surface: #201b1e;
+        --surface-raised: #292226;
+        --mulberry-deep: #d492b8;
+        --option: #aac1d3;
+        --shadow: 0 20px 55px rgba(0, 0, 0, 0.3);
+        --dialog-shadow: 0 28px 90px rgba(0, 0, 0, 0.58);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      background:
+        linear-gradient(90deg, transparent 0 5.2rem, var(--hairline) 5.2rem calc(5.2rem + 1px), transparent calc(5.2rem + 1px)),
+        var(--paper);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    button { font: inherit; }
+
+    main {
+      width: min(1160px, 100%);
+      margin: 0 auto;
+      padding: clamp(3.25rem, 8vw, 7rem) clamp(1.25rem, 5vw, 4.5rem) clamp(3rem, 7vw, 6rem);
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 2rem;
+      margin-bottom: clamp(2rem, 5vw, 3.5rem);
+      padding-left: clamp(0rem, 4vw, 3rem);
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin: 0 0 0.65rem;
+      color: var(--mulberry-deep);
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 2.2rem;
+      height: 2px;
+      background: var(--mulberry);
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(3.15rem, 8.5vw, 7rem);
+      font-weight: 500;
+      letter-spacing: -0.052em;
+      line-height: 0.88;
+    }
+
+    .count {
+      min-width: 8.5rem;
+      padding-bottom: 0.55rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      text-align: right;
+    }
+
+    .count strong {
+      display: block;
+      color: var(--ink);
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 2.35rem;
+      font-weight: 650;
+      line-height: 1;
+    }
+
+    .room-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(1rem, 2.5vw, 1.6rem);
+    }
+
+    .room-card {
+      position: relative;
+      display: grid;
+      grid-template-rows: minmax(180px, 1fr) auto;
+      min-width: 0;
+      min-height: 310px;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--hairline);
+      border-radius: 0;
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: var(--shadow);
+      text-align: left;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--ink) 36%, transparent);
+      box-shadow: 0 23px 55px rgba(56, 32, 48, 0.17);
+    }
+
+    .room-card:focus-visible,
+    .close-button:focus-visible {
+      outline: 3px solid var(--mulberry-deep);
+      outline-offset: 3px;
+    }
+
+    .room-card.option { border-style: dashed; }
+
+    .card-swatch {
+      position: relative;
+      min-height: 180px;
+      background: var(--swatch);
+    }
+
+    .card-swatch.split {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card-swatch.split.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card-swatch-part { background: var(--swatch); }
+
+    .card-swatch::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 42%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.12), transparent);
+      opacity: 0.35;
+    }
+
+    .card-status {
+      position: absolute;
+      z-index: 1;
+      top: 0.9rem;
+      right: 0.9rem;
+      display: inline-flex;
+      min-height: 1.65rem;
+      align-items: center;
+      padding: 0.28rem 0.6rem;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.82);
+      color: #292326;
+      font-size: 0.67rem;
+      font-weight: 600;
+      letter-spacing: 0.045em;
+      line-height: 1.2;
+      text-transform: uppercase;
+      backdrop-filter: blur(5px);
+    }
+
+    .card-status.option-badge {
+      background: rgba(31, 42, 51, 0.86);
+      color: #fff;
+    }
+
+    .card-copy {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 1rem;
+      min-height: 130px;
+      padding: 1.25rem 1.3rem 1.35rem;
+    }
+
+    .room-floor {
+      display: block;
+      margin-bottom: 0.38rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card-room {
+      display: block;
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(1.55rem, 2.6vw, 2.15rem);
+      font-weight: 650;
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+
+    .card-colour {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.3;
+    }
+
+    .card-arrow {
+      display: grid;
+      width: 2.75rem;
+      height: 2.75rem;
+      place-items: center;
+      border: 1px solid var(--hairline);
+      border-radius: 50%;
+      color: var(--ink);
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .screen-note {
+      max-width: 700px;
+      margin: 1.5rem 0 0 auto;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    dialog {
+      width: min(980px, calc(100vw - 2rem));
+      max-width: none;
+      max-height: min(790px, calc(100dvh - 2rem));
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--hairline);
+      border-radius: 0;
+      background: var(--surface-raised);
+      color: var(--ink);
+      box-shadow: var(--dialog-shadow);
+    }
+
+    dialog::backdrop {
+      background: rgba(24, 17, 21, 0.72);
+      backdrop-filter: blur(4px);
+    }
+
+    .dialog-layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.86fr) minmax(390px, 1.14fr);
+      min-height: min(680px, calc(100dvh - 2rem));
+    }
+
+    .detail-swatch {
+      position: relative;
+      display: flex;
+      min-height: 100%;
+      align-items: flex-end;
+      padding: clamp(1.5rem, 4vw, 2.6rem);
+      background: var(--detail-swatch);
+      color: var(--swatch-ink);
+    }
+
+    .swatch-readout { position: relative; z-index: 1; }
+
+    .detail-swatch.multi {
+      display: grid;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      padding: 0;
+    }
+
+    .multi-swatch {
+      display: flex;
+      min-height: 0;
+      align-items: flex-end;
+      padding: clamp(1.35rem, 3vw, 2.2rem);
+      background: var(--colour-swatch);
+      color: var(--colour-ink);
+    }
+
+    .multi-swatch + .multi-swatch {
+      border-top: 1px solid rgba(0, 0, 0, 0.18);
+    }
+
+    .multi-swatch-copy { position: relative; z-index: 1; }
+
+    .multi-swatch-area {
+      display: block;
+      margin-bottom: 0.28rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .multi-swatch-name {
+      display: block;
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(1.4rem, 2.7vw, 2rem);
+      font-weight: 650;
+      line-height: 1;
+    }
+
+    .multi-swatch-values {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.85rem;
+      margin-top: 0.75rem;
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.035em;
+    }
+
+    .swatch-readout p {
+      max-width: 22rem;
+      margin: 0;
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(1.5rem, 3.2vw, 2.25rem);
+      line-height: 1.08;
+    }
+
+    .swatch-values {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 1rem;
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.045em;
+    }
+
+    .dialog-body {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      padding: clamp(1.5rem, 4vw, 3.4rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: grid;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      place-items: center;
+      border: 1px solid var(--hairline);
+      border-radius: 50%;
+      background: var(--surface-raised);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .close-button svg { width: 19px; height: 19px; }
+
+    .detail-kicker {
+      margin: 0 3.5rem 0.55rem 0;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .detail-title {
+      max-width: 10ch;
+      margin: 0 0 2rem;
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(2.65rem, 5.2vw, 4.5rem);
+      font-weight: 500;
+      letter-spacing: -0.042em;
+      line-height: 0.92;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin: -0.9rem 0 1.45rem;
+    }
+
+    .detail-badge {
+      display: inline-flex;
+      min-height: 1.75rem;
+      align-items: center;
+      padding: 0.28rem 0.65rem;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      color: var(--mulberry-deep);
+      font-size: 0.69rem;
+      font-weight: 600;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+    }
+
+    .detail-badge.option { color: var(--option); }
+
+    .detail-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin: 0;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .dialog-body.multi-room .detail-title {
+      max-width: none;
+      margin-bottom: 1.35rem;
+    }
+
+    .multi-detail-list {
+      display: grid;
+      margin: 0;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .multi-paint {
+      padding: 1.15rem 0 1.25rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .multi-paint-head {
+      display: grid;
+      grid-template-columns: 2.35rem minmax(0, 1fr);
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .mini-swatch {
+      width: 2.35rem;
+      height: 2.35rem;
+      border: 1px solid rgba(0, 0, 0, 0.16);
+      background: var(--colour-swatch);
+    }
+
+    .multi-paint-area {
+      display: block;
+      color: var(--muted);
+      font-size: 0.69rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .multi-paint-name {
+      display: block;
+      margin-top: 0.15rem;
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 650;
+      line-height: 1;
+    }
+
+    .multi-paint-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 0 0 0.8rem;
+    }
+
+    .multi-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin: 0;
+    }
+
+    .multi-field {
+      min-width: 0;
+      padding: 0.5rem 0;
+    }
+
+    .multi-field:nth-child(odd) { padding-right: 0.8rem; }
+    .multi-field:nth-child(even) { padding-left: 0.8rem; }
+
+    .multi-paint-note {
+      margin: 0.75rem 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .detail-item {
+      min-width: 0;
+      padding: 0.95rem 0 1rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .detail-item:nth-child(odd) { padding-right: 1.15rem; }
+    .detail-item:nth-child(even) {
+      padding-left: 1.15rem;
+      border-left: 1px solid var(--hairline);
+    }
+
+    dt {
+      margin-bottom: 0.28rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+
+    dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .detail-note {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    .detail-note strong {
+      display: block;
+      margin-bottom: 0.3rem;
+      color: var(--ink);
+      font-size: 0.92rem;
+    }
+
+    .detail-note p { margin: 0; }
+
+    .product-reference {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .product-reference img {
+      width: 82px;
+      aspect-ratio: 1;
+      padding: 0.35rem;
+      border: 1px solid var(--hairline);
+      background: #fff;
+      object-fit: contain;
+    }
+
+    @media (max-width: 860px) {
+      .room-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .dialog-layout { grid-template-columns: 0.82fr 1.18fr; }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        background:
+          linear-gradient(90deg, transparent 0 1.25rem, var(--hairline) 1.25rem calc(1.25rem + 1px), transparent calc(1.25rem + 1px)),
+          var(--paper);
+      }
+
+      main { padding-top: 2.7rem; }
+
+      .intro {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+        padding-left: 0.7rem;
+      }
+
+      .count {
+        display: flex;
+        align-items: baseline;
+        gap: 0.55rem;
+        min-width: 0;
+        padding: 0;
+        text-align: left;
+      }
+
+      .count strong { font-size: 1.7rem; }
+
+      .room-grid { grid-template-columns: 1fr; }
+
+      .room-card {
+        grid-template-columns: minmax(120px, 40%) 1fr;
+        grid-template-rows: 1fr;
+        min-height: 172px;
+      }
+
+      .card-swatch { min-height: 172px; }
+      .card-copy { min-height: 172px; padding: 1.1rem; }
+      .card-room { font-size: clamp(1.45rem, 7.2vw, 2rem); }
+      .card-arrow { width: 2.65rem; height: 2.65rem; }
+
+      dialog {
+        width: 100vw;
+        height: 100dvh;
+        max-height: 100dvh;
+        border: 0;
+      }
+
+      .dialog-layout {
+        display: flex;
+        height: 100dvh;
+        min-height: 0;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+
+      .detail-swatch {
+        flex: 0 0 min(42dvh, 330px);
+        min-height: 260px;
+        padding: 1.4rem;
+      }
+
+      .dialog-body {
+        flex: 1 0 auto;
+        overflow: visible;
+        padding: 1.5rem 1.35rem max(2rem, env(safe-area-inset-bottom));
+      }
+
+      .close-button {
+        position: fixed;
+        top: max(0.85rem, env(safe-area-inset-top));
+        right: 0.85rem;
+        z-index: 3;
+        background: rgba(255, 255, 255, 0.9);
+        color: #251f22;
+        border-color: rgba(32, 25, 29, 0.18);
+      }
+
+      .detail-title { margin-bottom: 1.7rem; }
+    }
+
+    @media (max-width: 390px) {
+      .room-card { grid-template-columns: 38% 1fr; }
+      .card-copy { gap: 0.55rem; padding: 0.9rem; }
+      .card-arrow { width: 2.3rem; height: 2.3rem; }
+      .detail-list,
+      .multi-fields { grid-template-columns: 1fr; }
+      .multi-field:nth-child(odd),
+      .multi-field:nth-child(even) { padding: 0.5rem 0; }
+      .detail-item:nth-child(odd),
+      .detail-item:nth-child(even) {
+        padding: 0.85rem 0;
+        border-left: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .room-card { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="intro">
+      <div>
+        <p class="eyebrow">Choose a room</p>
+        <h1>Paint colours</h1>
+      </div>
+      <p class="count"><strong>08</strong> rooms painted · 01 option</p>
+    </header>
+
+    <section class="room-grid" aria-label="Rooms and paint colours">
+      <button class="room-card" type="button" data-room="kitchen-living-room" aria-haspopup="dialog">
+        <span class="card-swatch split three">
+          <span class="card-swatch-part" style="--swatch:#654657"></span>
+          <span class="card-swatch-part" style="--swatch:#B1AC96"></span>
+          <span class="card-swatch-part" style="--swatch:#EDECE7"></span>
+        </span>
+        <span class="card-copy">
+          <span><span class="room-floor">Ground floor</span><span class="card-room">Kitchen/Living-Room</span><span class="card-colour">Three colours</span></span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </span>
+      </button>
+
+      <button class="room-card" type="button" data-room="first-floor-woodwork" aria-haspopup="dialog">
+        <span class="card-swatch" style="--swatch:#BEBBB2"></span>
+        <span class="card-copy">
+          <span><span class="room-floor">First floor</span><span class="card-room">Woodwork</span><span class="card-colour">Chic Shadow</span></span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </span>
+      </button>
+
+      <button class="room-card" type="button" data-room="bathroom" aria-haspopup="dialog">
+        <span class="card-swatch" style="--swatch:#FADEAE"></span>
+        <span class="card-copy">
+          <span><span class="room-floor">Bathroom</span><span class="card-room">Bath tap bathroom</span><span class="card-colour">Californian Sands 4</span></span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </span>
+      </button>
+
+      <button class="room-card" type="button" data-room="garden-gym" aria-haspopup="dialog">
+        <span class="card-swatch" style="--swatch:#EEE9DC"><span class="card-status">Approximate</span></span>
+        <span class="card-copy">
+          <span><span class="room-floor">Garden</span><span class="card-room">Gym</span><span class="card-colour">Tahitian Vanilla</span></span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </span>
+      </button>
+
+      <button class="room-card" type="button" data-room="evas-room" aria-haspopup="dialog">
+        <span class="card-swatch" style="--swatch:#D8D0D9"></span>
+        <span class="card-copy">
+          <span><span class="room-floor">Bedroom</span><span class="card-room">Eva’s room</span><span class="card-colour">Purple Sage 5</span></span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </span>
+      </button>
+
+      <button class="room-card" type="button" data-room="stairs" aria-haspopup="dialog">
+        <span class="card-swatch" style="--swatch:#EDECE7"></span>
+        <span class="card-copy">
+          <span><span class="room-floor">Stair woodwork</span><span class="card-room">Stairs</span><span class="card-colour">Pure Brilliant White</span></span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </span>
+      </button>
+
+      <button class="room-card" type="button" data-room="second-bedroom" aria-haspopup="dialog">
+        <span class="card-swatch" style="--swatch:#324965"></span>
+        <span class="card-copy">
+          <span><span class="room-floor">Bedroom</span><span class="card-room">Second bedroom</span><span class="card-colour">Sapphire Salute</span></span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </span>
+      </button>
+
+      <button class="room-card" type="button" data-room="downstairs-toilet" aria-haspopup="dialog">
+        <span class="card-swatch" style="--swatch:hsl(238 42% 25%)"><span class="card-status">Approximate</span></span>
+        <span class="card-copy">
+          <span><span class="room-floor">Ground floor</span><span class="card-room">Downstairs toilet</span><span class="card-colour">Indigo Infusion</span></span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </span>
+      </button>
+
+      <button class="room-card" type="button" data-room="corridor" aria-haspopup="dialog">
+        <span class="card-swatch split">
+          <span class="card-swatch-part" style="--swatch:#D8DCE0"></span>
+          <span class="card-swatch-part" style="--swatch:#BEBBB2"></span>
+          <span class="card-status option-badge">Walls option</span>
+        </span>
+        <span class="card-copy">
+          <span><span class="room-floor">Walls &amp; woodwork</span><span class="card-room">Corridor</span><span class="card-colour">Moon Waves 6 · Chic Shadow</span></span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </span>
+      </button>
+    </section>
+
+    <p class="screen-note">Swatches use manufacturer-published digital values where available; screens display colour differently, so treat them as a guide rather than a perfect match. Approximate swatches will be corrected once verified.</p>
+  </main>
+
+  <dialog id="room-detail" aria-labelledby="detail-title">
+    <div class="dialog-layout">
+      <section class="detail-swatch" id="detail-swatch" aria-label="Paint colour swatch">
+        <div class="swatch-readout">
+          <p id="detail-description"></p>
+          <div class="swatch-values" id="swatch-values"></div>
+        </div>
+      </section>
+      <section class="dialog-body">
+        <button class="close-button" id="close-dialog" type="button" aria-label="Close room details">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <p class="detail-kicker" id="detail-room"></p>
+        <h2 class="detail-title" id="detail-title"></h2>
+        <div class="badge-row" id="badge-row"></div>
+        <dl class="detail-list" id="detail-list"></dl>
+        <div class="detail-note" id="detail-note"></div>
+      </section>
+    </div>
+  </dialog>
+
+  <script>
+    (function () {
+      var paints = {
+        "kitchen-living-room": {
+          room: "Kitchen/Living-Room",
+          multi: true,
+          colours: [
+            {
+              area: "Kitchen area",
+              colour: "Mulberry Burst",
+              brand: "Dulux",
+              swatch: "#654657",
+              swatchInk: "#ffffff",
+              hex: "#654657",
+              rgb: "101, 70, 87",
+              code: "10RR 09/150",
+              codeLabel: "Dulux code",
+              finish: "Not recorded",
+              notes: "Use the colour name and code when matching or buying more. Check the existing tin for the exact finish.",
+              verified: "Verified colour",
+              photo: "assets/mulberry-burst-tin.jpg",
+              photoAlt: "Dulux Mulberry Burst paint tin"
+            },
+            {
+              area: "Living room area",
+              colour: "Overtly Olive",
+              brand: "Dulux",
+              swatch: "#B1AC96",
+              swatchInk: "#24231e",
+              hex: "#B1AC96",
+              rgb: "177, 172, 150",
+              code: "70YY 43/113",
+              codeLabel: "Dulux code",
+              finish: "Not recorded",
+              notes: "Recorded use: living-room area of the shared ground-floor room.",
+              verified: "Verified colour"
+            },
+            {
+              area: "Woodwork",
+              colour: "Pure Brilliant White",
+              brand: "Dulux (assumed, unconfirmed)",
+              swatch: "#EDECE7",
+              swatchInk: "#242321",
+              hex: "#EDECE7",
+              rgb: "237, 236, 231",
+              code: "Not recorded",
+              codeLabel: "Dulux code",
+              finish: "Satinwood",
+              notes: "Pure Brilliant White satinwood. Brand is assumed to be Dulux and remains unconfirmed."
+            }
+          ]
+        },
+        "first-floor-woodwork": {
+          room: "First floor woodwork",
+          colour: "Chic Shadow",
+          brand: "Dulux",
+          swatch: "#BEBBB2",
+          swatchInk: "#1f1d1c",
+          hex: "#BEBBB2",
+          rgb: "190, 187, 178",
+          code: "00NN 53/000",
+          codeLabel: "Dulux code",
+          finish: "Not recorded",
+          description: "A soft neutral grey used on the first-floor woodwork.",
+          notes: "Recorded use: woodwork on the first floor."
+        },
+
+        "bathroom": {
+          room: "Bathroom · bath tap",
+          colour: "Californian Sands 4",
+          brand: "Dulux Trade",
+          swatch: "#FADEAE",
+          swatchInk: "#282214",
+          hex: "#FADEAE",
+          rgb: "250, 222, 174",
+          code: "38YY 81/256",
+          codeLabel: "Dulux code",
+          finish: "Easycare Bathroom soft sheen",
+          description: "A light, sun-warmed cream with a yellow-beige cast.",
+          notes: "For bathroom walls and ceilings. Bought from Eltham DIY on 14/09/2024.",
+          verified: "Verified 27 Sep 2026"
+        },
+        "garden-gym": {
+          room: "Garden gym",
+          colour: "Tahitian Vanilla",
+          brand: "Valspar",
+          swatch: "#EEE9DC",
+          swatchInk: "#282214",
+          hex: "#EEE9DC (approx.)",
+          rgb: "238, 233, 220 (approx.)",
+          code: "L8aW14a",
+          codeLabel: "Valspar code",
+          finish: "Not recorded",
+          description: "A soft, warm cream used in the garden gym.",
+          notes: "Valspar UK publishes no hex value. The displayed digital swatch is the closest published reference.",
+          approximate: true
+        },
+        "evas-room": {
+          room: "Eva’s room",
+          colour: "Purple Sage 5",
+          brand: "Dulux",
+          swatch: "#D8D0D9",
+          swatchInk: "#242024",
+          hex: "#D8D0D9",
+          rgb: "216, 208, 217",
+          code: "50RB 66/066",
+          codeLabel: "Dulux code",
+          finish: "Not recorded",
+          description: "A pale, softly muted lavender-grey.",
+          notes: "Recorded use: Eva’s room.",
+          verified: "Verified 27 Sep 2026"
+        },
+        "stairs": {
+          room: "Stairs · stair woodwork",
+          colour: "Pure Brilliant White",
+          brand: "Dulux (assumed, unconfirmed)",
+          swatch: "#EDECE7",
+          swatchInk: "#242321",
+          hex: "#EDECE7",
+          rgb: "237, 236, 231",
+          code: "Not recorded",
+          codeLabel: "Dulux code",
+          finish: "Satinwood",
+          description: "A warm-leaning, slightly off-pure white.",
+          notes: "Pure Brilliant White satinwood on the stair woodwork. Brand is assumed to be Dulux and remains unconfirmed."
+        },
+        "second-bedroom": {
+          room: "Second bedroom",
+          colour: "Sapphire Salute",
+          brand: "Dulux",
+          swatch: "#324965",
+          swatchInk: "#ffffff",
+          hex: "#324965",
+          rgb: "50, 73, 101",
+          code: "50BB 08/171",
+          codeLabel: "Dulux code",
+          finish: "Not recorded",
+          description: "A deep, muted navy blue with a slate-grey cast.",
+          notes: "LRV 8. Also known as Sapphire Springs 1 / Marine Waters.",
+          extraLabel: "LRV",
+          extraValue: "8",
+          verified: "Verified 27 Sep 2026"
+        },
+        "downstairs-toilet": {
+          room: "Downstairs toilet",
+          colour: "Indigo Infusion",
+          brand: "Dulux",
+          swatch: "hsl(238 42% 25%)",
+          swatchInk: "#ffffff",
+          hex: "No published value",
+          rgb: "No published value",
+          code: "Not recorded",
+          codeLabel: "Dulux code",
+          finish: "Not recorded",
+          description: "A deep indigo blue used in the downstairs toilet.",
+          notes: "No published digital reference is available. The displayed colour is an approximate visual placeholder.",
+          approximate: true,
+          verified: "Verified 27 Sep 2026"
+        },
+        "corridor": {
+          room: "Corridor",
+          multi: true,
+          colours: [
+            {
+              area: "Walls",
+              colour: "Moon Waves 6",
+              brand: "Dulux",
+              swatch: "#D8DCE0",
+              swatchInk: "#20262b",
+              hex: "#D8DCE0",
+              rgb: "216, 220, 224",
+              code: "50BB 72/032",
+              codeLabel: "Dulux code",
+              finish: "Not selected",
+              notes: "Under consideration for the corridor walls — not painted yet.",
+              option: true,
+              verified: "Verified colour"
+            },
+            {
+              area: "Woodwork",
+              colour: "Chic Shadow",
+              brand: "Dulux",
+              swatch: "#BEBBB2",
+              swatchInk: "#1f1d1c",
+              hex: "#BEBBB2",
+              rgb: "190, 187, 178",
+              code: "00NN 53/000",
+              codeLabel: "Dulux code",
+              finish: "Not recorded",
+              notes: "The corridor’s existing woodwork colour.",
+              verified: "Verified colour"
+            }
+          ]
+        }
+      };
+
+      var dialog = document.getElementById("room-detail");
+      var closeButton = document.getElementById("close-dialog");
+      var lastTrigger = null;
+
+      function detailItem(label, value) {
+        var wrapper = document.createElement("div");
+        wrapper.className = "detail-item";
+        var term = document.createElement("dt");
+        var definition = document.createElement("dd");
+        term.textContent = label;
+        definition.textContent = value;
+        wrapper.appendChild(term);
+        wrapper.appendChild(definition);
+        return wrapper;
+      }
+
+      function badge(text, className) {
+        var item = document.createElement("span");
+        item.className = "detail-badge" + (className ? " " + className : "");
+        item.textContent = text;
+        return item;
+      }
+
+      function swatchPanel(colour) {
+        var panel = document.createElement("div");
+        panel.className = "multi-swatch";
+        panel.style.setProperty("--colour-swatch", colour.swatch);
+        panel.style.setProperty("--colour-ink", colour.swatchInk);
+
+        var copy = document.createElement("div");
+        copy.className = "multi-swatch-copy";
+        var area = document.createElement("span");
+        area.className = "multi-swatch-area";
+        area.textContent = colour.area;
+        var name = document.createElement("span");
+        name.className = "multi-swatch-name";
+        name.textContent = colour.colour;
+        var values = document.createElement("span");
+        values.className = "multi-swatch-values";
+        var hex = document.createElement("span");
+        hex.textContent = colour.hex;
+        var rgb = document.createElement("span");
+        rgb.textContent = "RGB " + colour.rgb;
+        values.appendChild(hex);
+        values.appendChild(rgb);
+        copy.appendChild(area);
+        copy.appendChild(name);
+        copy.appendChild(values);
+        panel.appendChild(copy);
+        return panel;
+      }
+
+      function multiField(label, value) {
+        var wrapper = document.createElement("div");
+        wrapper.className = "multi-field";
+        var term = document.createElement("dt");
+        var definition = document.createElement("dd");
+        term.textContent = label;
+        definition.textContent = value;
+        wrapper.appendChild(term);
+        wrapper.appendChild(definition);
+        return wrapper;
+      }
+
+      function renderSingleRoom(paint) {
+        var swatch = document.getElementById("detail-swatch");
+        swatch.className = "detail-swatch";
+        swatch.style.setProperty("--detail-swatch", paint.swatch);
+        swatch.style.setProperty("--swatch-ink", paint.swatchInk);
+        swatch.setAttribute("aria-label", paint.colour + " colour swatch");
+
+        var readout = document.createElement("div");
+        readout.className = "swatch-readout";
+        var description = document.createElement("p");
+        description.textContent = paint.description;
+        var swatchValues = document.createElement("div");
+        swatchValues.className = "swatch-values";
+        var hex = document.createElement("span");
+        hex.textContent = paint.hex;
+        var rgb = document.createElement("span");
+        rgb.textContent = "RGB " + paint.rgb;
+        swatchValues.appendChild(hex);
+        swatchValues.appendChild(rgb);
+        readout.appendChild(description);
+        readout.appendChild(swatchValues);
+        swatch.replaceChildren(readout);
+
+        document.querySelector(".dialog-body").classList.remove("multi-room");
+        document.getElementById("detail-room").textContent = paint.room;
+        document.getElementById("detail-title").textContent = paint.colour;
+
+        var badges = document.getElementById("badge-row");
+        badges.replaceChildren();
+        if (paint.option) badges.appendChild(badge("Option · not painted", "option"));
+        if (paint.approximate) badges.appendChild(badge("Approximate swatch", ""));
+        if (paint.verified) badges.appendChild(badge(paint.verified, ""));
+
+        var list = document.getElementById("detail-list");
+        list.className = "detail-list";
+        list.replaceChildren();
+        list.appendChild(detailItem("Brand", paint.brand));
+        list.appendChild(detailItem(paint.codeLabel, paint.code));
+        list.appendChild(detailItem("Hex", paint.hex));
+        list.appendChild(detailItem("RGB", paint.rgb));
+        list.appendChild(detailItem("Finish", paint.finish));
+        if (paint.extraLabel) list.appendChild(detailItem(paint.extraLabel, paint.extraValue));
+
+        var note = document.getElementById("detail-note");
+        note.style.display = "";
+        note.replaceChildren();
+        var strong = document.createElement("strong");
+        strong.textContent = paint.option ? "Status" : "Notes";
+        var paragraph = document.createElement("p");
+        paragraph.textContent = paint.notes;
+        note.appendChild(strong);
+        note.appendChild(paragraph);
+
+        if (paint.photo) {
+          var reference = document.createElement("div");
+          reference.className = "product-reference";
+          var image = document.createElement("img");
+          image.src = paint.photo;
+          image.alt = paint.photoAlt;
+          var copy = document.createElement("p");
+          copy.textContent = "Paint-tin reference";
+          reference.appendChild(image);
+          reference.appendChild(copy);
+          note.appendChild(reference);
+        }
+      }
+
+      function renderMultiRoom(paint) {
+        var swatch = document.getElementById("detail-swatch");
+        swatch.className = "detail-swatch multi";
+        swatch.style.gridTemplateRows = "repeat(" + paint.colours.length + ", minmax(0, 1fr))";
+        swatch.style.removeProperty("--detail-swatch");
+        swatch.style.removeProperty("--swatch-ink");
+        swatch.setAttribute("aria-label", paint.room + " paint colour swatches");
+        swatch.replaceChildren();
+        paint.colours.forEach(function (colour) {
+          swatch.appendChild(swatchPanel(colour));
+        });
+
+        document.querySelector(".dialog-body").classList.add("multi-room");
+        document.getElementById("detail-room").textContent = paint.room;
+        document.getElementById("detail-title").textContent = paint.colours.length + " colours";
+        document.getElementById("badge-row").replaceChildren();
+
+        var list = document.getElementById("detail-list");
+        list.className = "multi-detail-list";
+        list.replaceChildren();
+        paint.colours.forEach(function (colour) {
+          var section = document.createElement("section");
+          section.className = "multi-paint";
+
+          var head = document.createElement("div");
+          head.className = "multi-paint-head";
+          var miniSwatch = document.createElement("span");
+          miniSwatch.className = "mini-swatch";
+          miniSwatch.style.setProperty("--colour-swatch", colour.swatch);
+          miniSwatch.setAttribute("aria-hidden", "true");
+          var heading = document.createElement("div");
+          var area = document.createElement("span");
+          area.className = "multi-paint-area";
+          area.textContent = colour.area;
+          var name = document.createElement("span");
+          name.className = "multi-paint-name";
+          name.textContent = colour.colour;
+          heading.appendChild(area);
+          heading.appendChild(name);
+          head.appendChild(miniSwatch);
+          head.appendChild(heading);
+          section.appendChild(head);
+
+          var paintBadges = document.createElement("div");
+          paintBadges.className = "multi-paint-badges";
+          if (colour.option) paintBadges.appendChild(badge("Option · not painted yet", "option"));
+          if (colour.approximate) paintBadges.appendChild(badge("Approximate swatch", ""));
+          if (colour.verified) paintBadges.appendChild(badge(colour.verified, ""));
+          if (paintBadges.children.length) section.appendChild(paintBadges);
+
+          var fields = document.createElement("dl");
+          fields.className = "multi-fields";
+          fields.appendChild(multiField("Brand", colour.brand));
+          fields.appendChild(multiField(colour.codeLabel, colour.code));
+          fields.appendChild(multiField("Hex", colour.hex));
+          fields.appendChild(multiField("RGB", colour.rgb));
+          fields.appendChild(multiField("Finish", colour.finish));
+          section.appendChild(fields);
+
+          if (colour.notes) {
+            var note = document.createElement("p");
+            note.className = "multi-paint-note";
+            note.textContent = colour.notes;
+            section.appendChild(note);
+          }
+
+          if (colour.photo) {
+            var reference = document.createElement("div");
+            reference.className = "product-reference";
+            var image = document.createElement("img");
+            image.src = colour.photo;
+            image.alt = colour.photoAlt;
+            var referenceCopy = document.createElement("p");
+            referenceCopy.textContent = "Paint-tin reference";
+            reference.appendChild(image);
+            reference.appendChild(referenceCopy);
+            section.appendChild(reference);
+          }
+
+          list.appendChild(section);
+        });
+
+        var note = document.getElementById("detail-note");
+        note.style.display = "none";
+        note.replaceChildren();
+      }
+
+      function openRoom(roomId, trigger) {
+        var paint = paints[roomId];
+        if (!paint) return;
+        lastTrigger = trigger;
+
+        if (paint.multi) renderMultiRoom(paint);
+        else renderSingleRoom(paint);
+
+        document.body.classList.add("modal-open");
+        dialog.showModal();
+        closeButton.focus();
+      }
+
+      document.querySelectorAll(".room-card").forEach(function (card) {
+        card.addEventListener("click", function () {
+          openRoom(card.getAttribute("data-room"), card);
+        });
+      });
+
+      closeButton.addEventListener("click", function () { dialog.close(); });
+
+      dialog.addEventListener("click", function (event) {
+        if (event.target === dialog) dialog.close();
+      });
+
+      dialog.addEventListener("close", function () {
+        document.body.classList.remove("modal-open");
+        if (lastTrigger) lastTrigger.focus();
+      });
+    }());
+  </script>
+</body>
+</html>
